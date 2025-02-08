@@ -1,0 +1,16 @@
+llm_backend/
+├── app/
+│   ├── core/
+│   │   ├── __init__.py
+│   │   └── config.py          # 配置文件
+│   └── services/
+│       ├── __init__.py
+│       └── deepseek_service.py
+├── docs/
+│   ├── deepseek_stream.py
+│   ├── deepseek_sync.py
+│   └── ollama_test.py
+├── .env
+├── main.py
+├── requirements.txt
+└── test_chat.py 
