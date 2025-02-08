@@ -4,6 +4,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Dict
 from app.services.llm_factory import LLMFactory
+from app.services.search_service import SearchService
 
 app = FastAPI(title="LLM Chat API")
 
@@ -49,6 +50,23 @@ async def reason_endpoint(request: ReasonRequest):
             yield "data: \n\n"
             # 直接使用请求中的 messages
             async for chunk in reasoner.generate_stream(request.messages):
+                yield f"data: {chunk}\n\n"
+                
+        return StreamingResponse(
+            format_stream(),
+            media_type="text/event-stream"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/search")
+async def search_endpoint(request: ChatRequest):
+    """带搜索功能的聊天接口"""
+    try:
+        search_service = SearchService()
+        async def format_stream():
+            yield "data: \n\n"
+            async for chunk in search_service.generate_stream(request.messages):
                 yield f"data: {chunk}\n\n"
                 
         return StreamingResponse(
